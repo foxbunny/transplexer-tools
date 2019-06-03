@@ -12,6 +12,20 @@ reactive programming library.
 The tools include utility functions as well as canned transformers that can be
 used directly.
 
+## Installation
+
+Install from the NPM repository with NPM:
+
+```bash
+npm install --save-dev transplexer-tools
+```
+
+or with Yarn:
+
+```bash
+yarn add --dev transplexer-tools
+```
+
 ## Utility functions
 
 ### `toTransformer(fn)`
