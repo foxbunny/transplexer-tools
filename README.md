@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/foxbunny/transplexer-tools.svg?branch=master)](https://travis-ci.org/foxbunny/transplexer-tools)
+
 # Transplexer tools
 
 Essential tools for [transplexer](https://github.com/foxbunny/transplexer).
