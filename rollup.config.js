@@ -6,7 +6,7 @@ export default [
 	{
 		input: 'src/index.js',
 		output: {
-			name: 'transplexer',
+			name: 'transplexer-tools',
 			file: pkg.browser,
 			format: 'umd',
 		},
