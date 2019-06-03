@@ -1,0 +1,30 @@
+{
+  "name": "transplexer-tools",
+  "version": "0.0.0",
+  "description": "Utilities for the transplexer library",
+  "main": "dist/transplexer-tools.js",
+  "module": "dist/transplexer-tools.mjs",
+  "browser": "dist/transplexer-tools.umd.js",
+  "repository": "https://github.com/foxbunny/transplexer-tools.git",
+  "author": "Hajime Yamasaki Vukelic <hayavuk@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "build": "rollup -c",
+    "preversion": "yarn run build"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "jest": "^24.8.0",
+    "jest-date-mock": "^1.0.7",
+    "rollup": "^1.13.1",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-node-resolve": "^5.0.1"
+  },
+  "dependencies": {
+    "core-js": "2",
+    "transplexer": "^1.0.0"
+  }
+}
