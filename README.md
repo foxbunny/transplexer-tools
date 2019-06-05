@@ -235,3 +235,31 @@ counter.connect(updateCounterUI);
 
 document.addEventListener('click', counter.send, false);
 ```
+
+### `get(path, defaultValue)`
+
+This transformer will take any object coming down the pipe and return a value
+that corresponds to the dot-separated path within the object. If such a path or
+a value does not exist, it transmits the default value.
+
+The path can be composed of any numbers of keys or array indices. For example,
+to reach `'baz'` in `{foo: {bar: 'baz'}}`, we would use a path `'foo.bar'`.
+
+Example:
+
+```javascript
+import pipe from 'transplexer';
+import {get} from 'transplexer-tools';
+
+const firstUserName = pipe(get('0.name', 'unknown'));
+firstUserName.connect(console.log);
+
+firstUserName.send([
+  {name: 'John', email: 'jdoe@example.com'},
+  {name: 'Jane', email: 'doej@example.com'},
+]);
+// logs 'John'
+
+firstUserName.send([]);
+// logs 'unknown'
+```

@@ -163,3 +163,49 @@ export function reduce(fn, initialValue) {
     };
   };
 };
+
+/**
+ * Get a value at specified path or return a default value if key is undefined
+ */
+export function get(path, defaultValue) {
+  const segments = path.split('.');
+
+  return function (next) {
+    if (segments.length === 1) {
+      return function (obj) {
+        if (typeof obj === 'undefined') {
+          return next(defaultValue);
+        }
+
+        const value = obj[path];
+
+        if (typeof value === 'undefined') {
+          next(defaultValue);
+        }
+        else {
+          next(value);
+        }
+      };
+    }
+
+    return function (obj) {
+      next(function getValue(remaining, val) {
+        if (typeof val === 'undefined') {
+          return defaultValue;
+        }
+
+        if (remaining.length === 0) {
+          return val;
+        }
+
+        const [head, ...tail] = remaining;
+
+        if (head in val) {
+          return getValue(tail, val[head]);
+        }
+
+        return defaultValue;
+      }(segments, obj));
+    };
+  };
+};

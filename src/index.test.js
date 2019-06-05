@@ -9,6 +9,7 @@ import {
   filter,
   map,
   reduce,
+  get,
 } from './index';
 
 jest.useFakeTimers();
@@ -299,6 +300,100 @@ describe('reduce', function () {
 
     expect(f).toHaveBeenCalledWith(3);
     expect(f).toHaveBeenLastCalledWith(9);
+  });
+
+});
+
+describe('get', function () {
+
+  test('get object key', function () {
+    const p = pipe(get('test', 'default'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send({test: 'some value'});
+
+    expect(f).toHaveBeenCalledWith('some value');
+  });
+
+  test('get default value if key does not exits', function () {
+    const p = pipe(get('test', 'default'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send({foo: 'unrelated'});
+
+    expect(f).toHaveBeenCalledWith('default');
+  });
+
+  test('get default value is value is not an object', function () {
+    const p = pipe(get('test', 'default'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send(1);
+
+    expect(f).toHaveBeenCalledWith('default');
+  });
+
+  test('get default value if value is undefined', function () {
+    const p = pipe(get('test', 'default'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send(undefined);
+
+    expect(f).toHaveBeenCalledWith('default');
+  });
+
+  test('get a path', function () {
+    const p = pipe(get('test.me', 'default'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send({test: {me: 'now'}});
+
+    expect(f).toHaveBeenCalledWith('now');
+  });
+
+  test('get the default value if key is missing', function () {
+    const p = pipe(get('test.me', 'default'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send({test: {}});
+
+    expect(f).toHaveBeenCalledWith('default');
+  });
+
+  test('get default if parent key is missing', function () {
+    const p = pipe(get('test.me', 'default'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send({});
+
+    expect(f).toHaveBeenCalledWith('default');
+  });
+
+  test('get default value if value is undefined', function () {
+    const p = pipe(get('test.me', 'default'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send(undefined);
+
+    expect(f).toHaveBeenCalledWith('default');
+  });
+
+  test('get a value from an array', function () {
+    const p = pipe(get('test.0.me', 'default'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send({test: [{me: 'first'}, {me: 'second'}]});
+
+    expect(f).toHaveBeenCalledWith('first');
   });
 
 });
