@@ -28,6 +28,8 @@ yarn add --dev transplexer-tools
 
 ## Utility functions
 
+Utility functions are functions that are used to build other types of tools.
+
 ### `toTransformer(fn)`
 
 This function takes a pure function and converts it into a transformer.
@@ -45,6 +47,11 @@ cont p = pipe(
 ```
 
 ## Transformers
+
+Transformers are functions that are placed inside the pipe and modify the
+values and/or the flow of values through the pipe. These can either be simple
+transformers that are used as is, or transformer factories that can be
+configured via arguments.
 
 ### `merge`
 
