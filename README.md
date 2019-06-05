@@ -12,6 +12,27 @@ reactive programming library.
 The tools include utility functions as well as canned transformers that can be
 used directly.
 
+## Contents
+
+<!-- vim-markdown-toc GFM -->
+
+* [Installation](#installation)
+* [Utility functions](#utility-functions)
+  * [`toTransformer(fn)`](#totransformerfn)
+* [Transformers](#transformers)
+  * [`merge`](#merge)
+  * [`debounce(time)`](#debouncetime)
+  * [`throttle(interval)`](#throttleinterval)
+  * [`rebound(time, ...baseValues)`](#reboundtime-basevalues)
+  * [`filter(testFn)`](#filtertestfn)
+  * [`map(fn)`](#mapfn)
+  * [`reduce(fn, initialValue)`](#reducefn-initialvalue)
+  * [`get(path, defaultValue)`](#getpath-defaultvalue)
+* [Receiver functions](#receiver-functions)
+  * [`splitter(keys)`](#splitterkeys)
+
+<!-- vim-markdown-toc -->
+
 ## Installation
 
 Install from the NPM repository with NPM:
