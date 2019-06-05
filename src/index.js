@@ -1,3 +1,5 @@
+import pipe from 'transplexer';
+
 /**
  * Convert a function into a pipe transformer.
  *
@@ -207,5 +209,42 @@ export function get(path, defaultValue) {
         return defaultValue;
       }(segments, obj));
     };
+  };
+};
+
+/**
+ * Create an object that splits incoming objects into individual keys
+ *
+ * The only argument is an array of keys. For every key in the array, a pipe is
+ * created and exposed through the key name in the return value of this
+ * function. Because all specified keys become properties of the return value,
+ * the `send` key cannot be used and will be omitted.
+ *
+ * Example:
+ *
+ *     const p = pipe();
+ *     const s = splitter(['foo', 'bar']);
+ *     p.connect(s.send);
+ *     s.foo.connect(console.log);
+ *     s.bar.connect(console.log);
+ *
+ */
+export function splitter(keys) {
+  const keyPipes = {}
+
+  keys.forEach(function (key) {
+    if (key === 'send') {
+      return;
+    }
+    keyPipes[key] = pipe();
+  });
+
+  return {
+    ...keyPipes,
+    send: function (obj) {
+      keys.forEach(function (key) {
+        keyPipes[key].send(obj[key]);
+      });
+    },
   };
 };

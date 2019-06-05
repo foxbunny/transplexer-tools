@@ -4109,10 +4109,12 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
-transplexer@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/transplexer/-/transplexer-1.0.0.tgz#533b991fc63bc41b48f30d1fca13513b95aaf5f7"
-  integrity sha512-UE65oYOjfBHDGswSY0WYqUuHdxr/XRfXA4MuJDmSVAid7XIPy3ijdOR4o4jARX1cTuuMr72oqTumYcQjFt981Q==
+transplexer@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/transplexer/-/transplexer-1.0.1.tgz#397d0b9674fdfd1983678473091d1f942cbc5196"
+  integrity sha512-oIuTdMYMj/QAWNYfTegGX3SG8A6o4r8Lg0QQvKPPYMxMsGjTHVHmN+3Gf5utRB3wfKRr6047/JoX9kjYQvryOA==
+  dependencies:
+    core-js "2"
 
 trim-right@^1.0.1:
   version "1.0.1"

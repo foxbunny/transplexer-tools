@@ -270,3 +270,46 @@ firstUserName.send([
 firstUserName.send([]);
 // logs 'unknown'
 ```
+
+## Receiver functions
+
+Receiver functions are utility functions that are used as a connected callback
+in a pipe. They may also be factory functions that produce functions and
+objects that can be used as receivers. Receivers usually serve as mediators
+between two pipes.
+
+### `splitter(keys)`
+
+This function creates an object that has a `send()` method which can be
+connected to a pipe, and a property for each key in the `keys` array, which is
+a pipe. When an object is passed to the `send()` method, callbacks connected to
+each key's pipe will receive a value for that key in the received object.
+
+Keep in mind that 'send' cannot be used as a key in the key list because keys
+become properties on the returned object, and the return object needs to have a
+`send()` method.
+
+For example:
+
+```javascript
+import pipe from 'transplexer';
+import {splitter} from 'transplexer-tools';
+
+const userPipe = pipe();
+const userProperties = splitter(['name', 'email']);
+userPipe.connect(userProperties.send);
+userProperties.name.connect(function (name) {
+  console.log('name is ', name);
+});
+userProperties.email.connect(function (name) {
+  console.log('email is', email);
+});
+
+userPipe.send({name: 'John', 'doe@example.com'});
+// logs 'name is John' and 'email is doe@example.com'
+userPipe.send({name: 'Jane'});
+// logs 'name is Jane' and 'email is undefined'
+```
+
+As can be seen in the example above, pipes for missing keys also receive a
+value, and the value is `undefined`.

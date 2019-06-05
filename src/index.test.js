@@ -10,6 +10,7 @@ import {
   map,
   reduce,
   get,
+  splitter,
 } from './index';
 
 jest.useFakeTimers();
@@ -394,6 +395,31 @@ describe('get', function () {
     p.send({test: [{me: 'first'}, {me: 'second'}]});
 
     expect(f).toHaveBeenCalledWith('first');
+  });
+
+});
+
+describe('splitter', function () {
+
+  test('split a pipe', function () {
+    const p = pipe();
+    const s = splitter(['foo', 'bar']);
+    const fooFn = jest.fn();
+    const barFn = jest.fn();
+    s.foo.connect(fooFn);
+    s.bar.connect(barFn);
+    p.connect(s.send);
+
+    p.send({foo: 'foo value', bar: 'bar value'});
+
+    expect(fooFn).toHaveBeenCalledWith('foo value');
+    expect(barFn).toHaveBeenCalledWith('bar value');
+  });
+
+  test('send key is ignored', function () {
+    const s = splitter(['send', 'bar']);
+
+    expect(typeof s.send.connect).toBe('undefined');
   });
 
 });
