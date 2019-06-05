@@ -29,6 +29,7 @@ used directly.
   * [`reduce(fn, initialValue)`](#reducefn-initialvalue)
   * [`get(path, defaultValue)`](#getpath-defaultvalue)
   * [`always(...value)`](#alwaysvalue)
+  * [`sticky(initialValue)`](#stickyinitialvalue)
 * [Receiver functions](#receiver-functions)
   * [`splitter(keys)`](#splitterkeys)
 
@@ -320,6 +321,26 @@ p.connect(console.log);
 
 document.addEventListener('click', p.send, false);
 // logs 'click' whenever page is clicked
+```
+
+### `sticky(initialValue)`
+
+This transformer will refuse to pass on values that are identical to the
+previous value. The values are compared for identity (`===`).
+
+Example:
+
+```javascript
+const p = pipe(sticky(0));
+p.connect(console.log);
+
+p.send(0);
+p.send(1);
+p.send(1);
+// Only logs '1' once.
+
+p.send(0);
+// Now logs '0'.
 ```
 
 ## Receiver functions

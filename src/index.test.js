@@ -12,6 +12,7 @@ import {
   get,
   splitter,
   always,
+  sticky,
 } from './index';
 
 jest.useFakeTimers();
@@ -455,6 +456,44 @@ describe('always', function () {
       ['good', 'times'],
       ['good', 'times'],
     ]);
+  });
+
+});
+
+describe('sticky', function () {
+
+  test('call a callback normally when value changes', function () {
+    const p = pipe(sticky(1));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send(2);
+
+    expect(f).toHaveBeenCalledWith(2);
+  });
+
+  test('same value twice', function () {
+    const p = pipe(sticky(1));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send(2);
+    p.send(2);
+
+    expect(f).toHaveBeenCalledTimes(1);
+  });
+
+  test('revert to original initial', function () {
+    const p = pipe(sticky(1));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send(2);
+    p.send(2);
+    p.send(1);
+
+    expect(f).toHaveBeenCalledTimes(2);
+    expect(f).toHaveBeenLastCalledWith(1);
   });
 
 });

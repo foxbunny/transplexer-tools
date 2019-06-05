@@ -262,3 +262,34 @@ export function always(...values) {
     };
   };
 };
+
+/**
+ * Transformer that only passes on values if they are different to last one
+ *
+ * The `initialValue` argument seeds the initial value for comparison and is
+ * `undefined` if unspecified.
+ *
+ * Values are compared for identity. This means that objects mutated in-place
+ * will be treated as identical (because they are). The main use case for this
+ * function is to handle primitive values right before they are use in DOM
+ * mutations. For example:
+ *
+ *     const p = pipe(sticky(''));
+ *     p.connect(function (text) {
+ *       myDiv.textContent = text;
+ *     });
+ *
+ *     p.send('');    // This will not alter the div
+ *     p.send('foo'); // this updates the div
+ *     p.send('foo'); // this does not update the div
+ */
+export function sticky(initialValue) {
+  return function (next) {
+    return function (value) {
+      if (value !== initialValue) {
+        initialValue = value;
+        next(value);
+      }
+    };
+  };
+};
