@@ -1,6 +1,6 @@
 {
   "name": "transplexer-tools",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Utilities for the transplexer library",
   "main": "dist/transplexer-tools.js",
   "module": "dist/transplexer-tools.mjs",
@@ -11,7 +11,7 @@
   "scripts": {
     "test": "jest",
     "build": "rollup -c",
-    "preversion": "yarn run build"
+    "prepublish": "yarn run build"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
@@ -26,5 +26,8 @@
   "dependencies": {
     "core-js": "2",
     "transplexer": "^1.0.1"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
