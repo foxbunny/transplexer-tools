@@ -28,6 +28,7 @@ used directly.
   * [`map(fn)`](#mapfn)
   * [`reduce(fn, initialValue)`](#reducefn-initialvalue)
   * [`get(path, defaultValue)`](#getpath-defaultvalue)
+  * [`always(...value)`](#alwaysvalue)
 * [Receiver functions](#receiver-functions)
   * [`splitter(keys)`](#splitterkeys)
 
@@ -290,6 +291,35 @@ firstUserName.send([
 
 firstUserName.send([]);
 // logs 'unknown'
+```
+
+### `always(...value)`
+
+This transformer ignores the received values and always returns the same value
+(or multiple values). This is similar to doing the following:
+
+```javascript
+pipe(map(function () {
+  return someValue;
+}));
+```
+
+The main difference compared to `map()` is that `always()` can pass on multiple
+values, whereas `map()` can only pass on one. Another subtle, but important
+difference is that the values passed on by `map()` are evaluated when the
+callback is called, whereas with `always()`, all the values are evaluated only
+once when the pie is being configured. This may be a problem for mutable values
+like objects or arrays, so in such cases, we prefer to use `map()` or write a
+custom transformer.
+
+Example:
+
+```javascript
+const p = pipe(always('click'));
+p.connect(console.log);
+
+document.addEventListener('click', p.send, false);
+// logs 'click' whenever page is clicked
 ```
 
 ## Receiver functions

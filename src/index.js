@@ -248,3 +248,17 @@ export function splitter(keys) {
     },
   };
 };
+
+/**
+ * Transformer that always emits the same value whenever any value is received
+ *
+ * The factory takes any number of arguments, and all arguments are passed on
+ * to the next transformer.
+ */
+export function always(...values) {
+  return function (next) {
+    return function () {
+      next(...values);
+    };
+  };
+};

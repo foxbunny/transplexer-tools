@@ -11,6 +11,7 @@ import {
   reduce,
   get,
   splitter,
+  always,
 } from './index';
 
 jest.useFakeTimers();
@@ -420,6 +421,40 @@ describe('splitter', function () {
     const s = splitter(['send', 'bar']);
 
     expect(typeof s.send.connect).toBe('undefined');
+  });
+
+});
+
+describe('always', function () {
+
+  test('always emit the same value', function () {
+    const p = pipe(always('good'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send('bad');
+    p.send(11);
+
+    expect(f).toHaveBeenCalledTimes(2);
+    expect(f.mock.calls).toEqual([
+      ['good'],
+      ['good'],
+    ]);
+  });
+
+  test('emit multiple values', function () {
+    const p = pipe(always('good', 'times'));
+    const f = jest.fn();
+    p.connect(f);
+
+    p.send('bad');
+    p.send(11);
+
+    expect(f).toHaveBeenCalledTimes(2);
+    expect(f.mock.calls).toEqual([
+      ['good', 'times'],
+      ['good', 'times'],
+    ]);
   });
 
 });
