@@ -17,13 +17,13 @@ used directly.
 Install from the NPM repository with NPM:
 
 ```bash
-npm install --save-dev transplexer-tools
+npm install transplexer-tools
 ```
 
 or with Yarn:
 
 ```bash
-yarn add --dev transplexer-tools
+yarn add transplexer-tools
 ```
 
 ## Utility functions
