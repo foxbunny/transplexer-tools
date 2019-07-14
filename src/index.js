@@ -29,7 +29,7 @@ export function toTransformer(f) {
  * the object, and transmit the object to the next transformer.
  */
 export function merge(next) {
-  const obj = {};
+  let obj = {};
 
   return function (another) {
     Object.assign(obj, another);
@@ -82,7 +82,7 @@ export function throttle(interval) {
         call(...args);
       }
       else {
-        const elapsed = Date.now() - lastCallTimestamp;
+        let elapsed = Date.now() - lastCallTimestamp;
         if (elapsed >= interval) {
           call(...args);
         }
@@ -170,7 +170,7 @@ export function reduce(fn, initialValue) {
  * Get a value at specified path or return a default value if key is undefined
  */
 export function get(path, defaultValue) {
-  const segments = path.split('.');
+  let segments = path.split('.');
 
   return function (next) {
     if (segments.length === 1) {
@@ -179,7 +179,7 @@ export function get(path, defaultValue) {
           return next(defaultValue);
         }
 
-        const value = obj[path];
+        let value = obj[path];
 
         if (typeof value === 'undefined') {
           next(defaultValue);
@@ -200,7 +200,7 @@ export function get(path, defaultValue) {
           return val;
         }
 
-        const [head, ...tail] = remaining;
+        let [head, ...tail] = remaining;
 
         if (head in val) {
           return getValue(tail, val[head]);
@@ -222,15 +222,15 @@ export function get(path, defaultValue) {
  *
  * Example:
  *
- *     const p = pipe();
- *     const s = splitter(['foo', 'bar']);
+ *     let p = pipe();
+ *     let s = splitter(['foo', 'bar']);
  *     p.connect(s.send);
  *     s.foo.connect(console.log);
  *     s.bar.connect(console.log);
  *
  */
 export function splitter(keys) {
-  const keyPipes = {}
+  let keyPipes = {}
 
   keys.forEach(function (key) {
     if (key === 'send') {
@@ -274,7 +274,7 @@ export function always(...values) {
  * function is to handle primitive values right before they are use in DOM
  * mutations. For example:
  *
- *     const p = pipe(sticky(''));
+ *     let p = pipe(sticky(''));
  *     p.connect(function (text) {
  *       myDiv.textContent = text;
  *     });

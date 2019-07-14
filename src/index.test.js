@@ -21,8 +21,8 @@ jest.useFakeTimers();
 describe('toTransfromer', function () {
 
   test('convert a pure function into a decorator', function () {
-    const c = jest.fn();
-    const deco = toTransformer(x => x + 1);
+    let c = jest.fn();
+    let deco = toTransformer(x => x + 1);
     deco(c)(1);
     expect(c).toHaveBeenCalledWith(2);
   });
@@ -32,8 +32,8 @@ describe('toTransfromer', function () {
 describe('merge', function () {
 
   test('will merge into object', function () {
-    const p = pipe(merge);
-    const f = jest.fn();
+    let p = pipe(merge);
+    let f = jest.fn();
     p.connect(f);
 
     p.send({foo: 'bar'});
@@ -42,8 +42,8 @@ describe('merge', function () {
   });
 
   test('will keep merging', function () {
-    const p = pipe(merge);
-    const f = jest.fn();
+    let p = pipe(merge);
+    let f = jest.fn();
     p.connect(f);
 
     p.send({foo: 'bar'});
@@ -57,8 +57,8 @@ describe('merge', function () {
 describe('debounce', function () {
 
   test('wait until timeout to pass the value', function () {
-    const p = pipe(debounce(200));
-    const f = jest.fn();
+    let p = pipe(debounce(200));
+    let f = jest.fn();
     p.connect(f);
     p.send('test');
 
@@ -71,8 +71,8 @@ describe('debounce', function () {
   });
 
   test('only pass on the last value', function () {
-    const p = pipe(debounce(200));
-    const f = jest.fn();
+    let p = pipe(debounce(200));
+    let f = jest.fn();
     p.connect(f);
 
     p.send('first');
@@ -91,8 +91,8 @@ describe('debounce', function () {
 describe('throttle', function () {
 
   test('pass values at specific intervals', function () {
-    const p = pipe(throttle(100));
-    const f = jest.fn();
+    let p = pipe(throttle(100));
+    let f = jest.fn();
     p.connect(f);
 
     fakeDate.advanceTo(0);
@@ -110,8 +110,8 @@ describe('throttle', function () {
   });
 
   test('pass values after the interval', function () {
-    const p = pipe(throttle(100));
-    const f = jest.fn();
+    let p = pipe(throttle(100));
+    let f = jest.fn();
     p.connect(f);
 
     fakeDate.advanceTo(0);
@@ -129,8 +129,8 @@ describe('throttle', function () {
 describe('rebound', function () {
 
   test('send default base value after timeout', function () {
-    const p = pipe(rebound(100));
-    const f = jest.fn();
+    let p = pipe(rebound(100));
+    let f = jest.fn();
     p.connect(f);
 
     p.send('test');
@@ -145,8 +145,8 @@ describe('rebound', function () {
   });
 
   test('does not rebound if another value is received', function () {
-    const p = pipe(rebound(100));
-    const f = jest.fn();
+    let p = pipe(rebound(100));
+    let f = jest.fn();
     p.connect(f);
 
     p.send('test');
@@ -163,8 +163,8 @@ describe('rebound', function () {
   });
 
   test('rebound twice in a row', function () {
-    const p = pipe(rebound(100));
-    const f = jest.fn();
+    let p = pipe(rebound(100));
+    let f = jest.fn();
     p.connect(f);
 
     p.send('test');
@@ -176,8 +176,8 @@ describe('rebound', function () {
   });
 
   test('rebound with custom base value', function () {
-    const p = pipe(rebound(100, 'untest'));
-    const f = jest.fn();
+    let p = pipe(rebound(100, 'untest'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send('test');
@@ -187,8 +187,8 @@ describe('rebound', function () {
   });
 
   test('rebound with multiple values', function () {
-    const p = pipe(rebound(100, 'untest', 'another'));
-    const f = jest.fn();
+    let p = pipe(rebound(100, 'untest', 'another'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send('test', 'again');
@@ -206,8 +206,8 @@ describe('filter', function () {
   }
 
   test('send value where predicate returns true', function () {
-    const p = pipe(filter(isTrue));
-    const f = jest.fn();
+    let p = pipe(filter(isTrue));
+    let f = jest.fn();
     p.connect(f);
 
     p.send('truthy');
@@ -216,8 +216,8 @@ describe('filter', function () {
   });
 
   test('do not send where predicate returns false', function () {
-    const p = pipe(filter(isTrue));
-    const f = jest.fn();
+    let p = pipe(filter(isTrue));
+    let f = jest.fn();
     p.connect(f);
 
     p.send('');
@@ -226,8 +226,8 @@ describe('filter', function () {
   });
 
   test('relay multiple values', function () {
-    const p = pipe(filter(isTrue));
-    const f = jest.fn();
+    let p = pipe(filter(isTrue));
+    let f = jest.fn();
     p.connect(f);
 
     p.send(true, 1, 2, 3);
@@ -240,10 +240,10 @@ describe('filter', function () {
 describe('map', function () {
 
   test('apply a function to a value', function () {
-    const p = pipe(map(function (x) {
+    let p = pipe(map(function (x) {
       return x.toUpperCase();
     }));
-    const f = jest.fn();
+    let f = jest.fn();
     p.connect(f);
 
     p.send('No shouting!');
@@ -252,10 +252,10 @@ describe('map', function () {
   });
 
   test('apply a function to multiple arguments', function () {
-    const p = pipe(map(function (...args) {
+    let p = pipe(map(function (...args) {
       return args.join(' ');
     }));
-    const f = jest.fn();
+    let f = jest.fn();
     p.connect(f);
 
     p.send('No shouting,', 'please!');
@@ -267,10 +267,10 @@ describe('map', function () {
 
 describe('reduce', function () {
   test('reduce a single value', function () {
-    const p = pipe(reduce(function (current, x) {
+    let p = pipe(reduce(function (current, x) {
       return current + x;
     }, 0));
-    const f = jest.fn();
+    let f = jest.fn();
     p.connect(f);
 
     p.send(1);
@@ -279,10 +279,10 @@ describe('reduce', function () {
   });
 
   test('reduce multiple values', function () {
-    const p = pipe(reduce(function (current, x) {
+    let p = pipe(reduce(function (current, x) {
       return current + x;
     }, 0));
-    const f = jest.fn();
+    let f = jest.fn();
     p.connect(f);
 
     p.send(1);
@@ -293,10 +293,10 @@ describe('reduce', function () {
   });
 
   test('reduce with multiple arguments', function () {
-    const p = pipe(reduce(function (current, x, y, z) {
+    let p = pipe(reduce(function (current, x, y, z) {
       return current + x + y + z;
     }, 0));
-    const f = jest.fn();
+    let f = jest.fn();
     p.connect(f);
 
     p.send(1, 1, 1);
@@ -311,8 +311,8 @@ describe('reduce', function () {
 describe('get', function () {
 
   test('get object key', function () {
-    const p = pipe(get('test', 'default'));
-    const f = jest.fn();
+    let p = pipe(get('test', 'default'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send({test: 'some value'});
@@ -321,8 +321,8 @@ describe('get', function () {
   });
 
   test('get default value if key does not exits', function () {
-    const p = pipe(get('test', 'default'));
-    const f = jest.fn();
+    let p = pipe(get('test', 'default'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send({foo: 'unrelated'});
@@ -331,8 +331,8 @@ describe('get', function () {
   });
 
   test('get default value is value is not an object', function () {
-    const p = pipe(get('test', 'default'));
-    const f = jest.fn();
+    let p = pipe(get('test', 'default'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send(1);
@@ -341,8 +341,8 @@ describe('get', function () {
   });
 
   test('get default value if value is undefined', function () {
-    const p = pipe(get('test', 'default'));
-    const f = jest.fn();
+    let p = pipe(get('test', 'default'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send(undefined);
@@ -351,8 +351,8 @@ describe('get', function () {
   });
 
   test('get a path', function () {
-    const p = pipe(get('test.me', 'default'));
-    const f = jest.fn();
+    let p = pipe(get('test.me', 'default'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send({test: {me: 'now'}});
@@ -361,8 +361,8 @@ describe('get', function () {
   });
 
   test('get the default value if key is missing', function () {
-    const p = pipe(get('test.me', 'default'));
-    const f = jest.fn();
+    let p = pipe(get('test.me', 'default'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send({test: {}});
@@ -371,8 +371,8 @@ describe('get', function () {
   });
 
   test('get default if parent key is missing', function () {
-    const p = pipe(get('test.me', 'default'));
-    const f = jest.fn();
+    let p = pipe(get('test.me', 'default'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send({});
@@ -381,8 +381,8 @@ describe('get', function () {
   });
 
   test('get default value if value is undefined', function () {
-    const p = pipe(get('test.me', 'default'));
-    const f = jest.fn();
+    let p = pipe(get('test.me', 'default'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send(undefined);
@@ -391,8 +391,8 @@ describe('get', function () {
   });
 
   test('get a value from an array', function () {
-    const p = pipe(get('test.0.me', 'default'));
-    const f = jest.fn();
+    let p = pipe(get('test.0.me', 'default'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send({test: [{me: 'first'}, {me: 'second'}]});
@@ -405,10 +405,10 @@ describe('get', function () {
 describe('splitter', function () {
 
   test('split a pipe', function () {
-    const p = pipe();
-    const s = splitter(['foo', 'bar']);
-    const fooFn = jest.fn();
-    const barFn = jest.fn();
+    let p = pipe();
+    let s = splitter(['foo', 'bar']);
+    let fooFn = jest.fn();
+    let barFn = jest.fn();
     s.foo.connect(fooFn);
     s.bar.connect(barFn);
     p.connect(s.send);
@@ -420,7 +420,7 @@ describe('splitter', function () {
   });
 
   test('send key is ignored', function () {
-    const s = splitter(['send', 'bar']);
+    let s = splitter(['send', 'bar']);
 
     expect(typeof s.send.connect).toBe('undefined');
   });
@@ -430,8 +430,8 @@ describe('splitter', function () {
 describe('always', function () {
 
   test('always emit the same value', function () {
-    const p = pipe(always('good'));
-    const f = jest.fn();
+    let p = pipe(always('good'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send('bad');
@@ -445,8 +445,8 @@ describe('always', function () {
   });
 
   test('emit multiple values', function () {
-    const p = pipe(always('good', 'times'));
-    const f = jest.fn();
+    let p = pipe(always('good', 'times'));
+    let f = jest.fn();
     p.connect(f);
 
     p.send('bad');
@@ -464,8 +464,8 @@ describe('always', function () {
 describe('sticky', function () {
 
   test('call a callback normally when value changes', function () {
-    const p = pipe(sticky(1));
-    const f = jest.fn();
+    let p = pipe(sticky(1));
+    let f = jest.fn();
     p.connect(f);
 
     p.send(2);
@@ -474,8 +474,8 @@ describe('sticky', function () {
   });
 
   test('same value twice', function () {
-    const p = pipe(sticky(1));
-    const f = jest.fn();
+    let p = pipe(sticky(1));
+    let f = jest.fn();
     p.connect(f);
 
     p.send(2);
@@ -485,8 +485,8 @@ describe('sticky', function () {
   });
 
   test('revert to original initial', function () {
-    const p = pipe(sticky(1));
-    const f = jest.fn();
+    let p = pipe(sticky(1));
+    let f = jest.fn();
     p.connect(f);
 
     p.send(2);

@@ -96,9 +96,9 @@ Example:
 import pipe from 'transplexer';
 import {merge} from 'transplexer-tools';
 
-const location = pipe();
-const user = pipe();
-const state = pipe(merge);
+let location = pipe();
+let user = pipe();
+let state = pipe(merge);
 
 state.connect(function (s) {
   console.log(JSON.stringify(s));
@@ -131,7 +131,7 @@ Example:
 import pipe from 'transplexer';
 import {debounce} from 'transplexer-tools';
 
-const autocompletePipe = pipe(debounce(200), autocompleteRequest);
+let autocompletePipe = pipe(debounce(200), autocompleteRequest);
 autocompletePipe.connect(updateSuggestionList);
 
 document
@@ -156,7 +156,7 @@ Example:
 import pipe from 'transplexer';
 import {throttle} from 'transplexer-tools';
 
-const parallaxPipe = pipe(throttle(30));
+let parallaxPipe = pipe(throttle(30));
 parallaxPipe.connect(updateParallax);
 
 window.addEventListener('scroll', parallaxPipe.send, false);
@@ -179,7 +179,7 @@ Example:
 import pipe from 'transplexer';
 import {rebound} from 'transplexer-tools';
 
-const messagePipe = pipe(rebound(5000, ''));
+let messagePipe = pipe(rebound(5000, ''));
 messagePipe.connect(showMessage);
 
 messagePipe.send('Hello, rebound!');
@@ -200,13 +200,13 @@ to split a pipe into two branches. Here's an example of such usage:
 import pipe from 'transplexer';
 import {filter} from 'transplexer-tools';
 
-const truePipe = pipe(filter(function (x) { return x; }));
+let truePipe = pipe(filter(function (x) { return x; }));
 truePipe.connect(incrementTrueCount);
 
-const falsePipe = pipe(filter(function (x) { return !x; }));
+let falsePipe = pipe(filter(function (x) { return !x; }));
 truePipe.connect(incrementFalseCount);
 
-const p = pipe();
+let p = pipe();
 p.connect(truePipe.send);
 p.connect(falsePipe.send);
 
@@ -231,7 +231,7 @@ Example:
 import pipe from 'transplexer';
 import {map} from 'transplexer-tools';
 
-const incPipe = pipe(map(function (x) { return x + 1; }));
+let incPipe = pipe(map(function (x) { return x + 1; }));
 incPipe.connect(console.log);
 
 incPipe.send(1); // logs 2
@@ -259,7 +259,7 @@ Example:
 import pipe from 'transplexer';
 import {reduce} from 'transplexer-tools';
 
-const counter = pipe(reduce(function (count) {
+let counter = pipe(reduce(function (count) {
   return count + 1;
 }), 0);
 counter.connect(updateCounterUI);
@@ -282,7 +282,7 @@ Example:
 import pipe from 'transplexer';
 import {get} from 'transplexer-tools';
 
-const firstUserName = pipe(get('0.name', 'unknown'));
+let firstUserName = pipe(get('0.name', 'unknown'));
 firstUserName.connect(console.log);
 
 firstUserName.send([
@@ -317,7 +317,7 @@ custom transformer.
 Example:
 
 ```javascript
-const p = pipe(always('click'));
+let p = pipe(always('click'));
 p.connect(console.log);
 
 document.addEventListener('click', p.send, false);
@@ -332,7 +332,7 @@ previous value. The values are compared for identity (`===`).
 Example:
 
 ```javascript
-const p = pipe(sticky(0));
+let p = pipe(sticky(0));
 p.connect(console.log);
 
 p.send(0);
@@ -371,8 +371,8 @@ For example:
 import pipe from 'transplexer';
 import {splitter} from 'transplexer-tools';
 
-const userPipe = pipe();
-const userProperties = splitter(['name', 'email']);
+let userPipe = pipe();
+let userProperties = splitter(['name', 'email']);
 userPipe.connect(userProperties.send);
 userProperties.name.connect(function (name) {
   console.log('name is ', name);
