@@ -293,3 +293,45 @@ export function sticky(initialValue) {
     };
   };
 };
+
+/**
+ * Creates a stateful pipe junction
+ *
+ * The junction objects allow values coming from multiple pipes to be joined
+ * into a single object where each pipe has its own key in the object. The
+ * initial state of the object is specified as an argument to the `junction()`
+ * function. If omitted, the initial state is an empty object.
+ *
+ * The junction object has a `send()` method which takes a key and returns a
+ * callback to which pipes can connect. Values from the pipes connecting to
+ * that callback will be placed under the specified key. For example:
+ *
+ *     import pipe from 'transplexer';
+ *     import {junction} from 'transplexer-tools';
+ *
+ *     let j = junction();
+ *     let p = pipe();
+ *
+ *     p.connect(j.sendAs('myKey'));
+ *     j.connect(console.log);
+ *
+ *     p.send('test');
+ *
+ *     // logs '{myKey: 'test'}'
+ */
+export function junction(initialState) {
+  let state = initialState || {};
+  let p = pipe();
+
+  return {
+    sendAs: function (key) {
+      return function (val) {
+        state[key] = val;
+        p.send(state);
+      };
+    },
+    connect: function (fn) {
+      return p.connect(fn);
+    },
+  };
+};

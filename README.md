@@ -32,6 +32,7 @@ used directly.
   * [`sticky(initialValue)`](#stickyinitialvalue)
 * [Receiver functions](#receiver-functions)
   * [`splitter(keys)`](#splitterkeys)
+  * [`junction(initialState)`](#junctioninitialstate)
 
 <!-- vim-markdown-toc -->
 
@@ -388,3 +389,31 @@ userPipe.send({name: 'Jane'});
 
 As can be seen in the example above, pipes for missing keys also receive a
 value, and the value is `undefined`.
+
+### `junction(initialState)`
+
+Junctions are used to merge multiple source pipes into an object-emitting
+output pipe. Each source pipe's value is assigned to a key in the output pipe's
+object. Junctions are stateful - all changes made by source pipes persist.
+
+The initial state of the object is specified as an argument to the `junction()`
+function. If omitted, the initial state is an empty object.
+
+The junction object has a `send()` method which takes a key and returns a
+callback to which pipes can connect. Values from the pipes connecting to that
+callback will be placed under the specified key. For example:
+
+```javascript
+import pipe from 'transplexer';
+import {junction} from 'transplexer-tools';
+
+let j = junction();
+let p = pipe();
+
+p.connect(j.sendAs('myKey'));
+j.connect(console.log);
+
+p.send('test');
+
+// logs '{myKey: 'test'}'
+```

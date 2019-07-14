@@ -13,6 +13,7 @@ import {
   splitter,
   always,
   sticky,
+  junction,
 } from './index';
 
 jest.useFakeTimers();
@@ -494,6 +495,44 @@ describe('sticky', function () {
 
     expect(f).toHaveBeenCalledTimes(2);
     expect(f).toHaveBeenLastCalledWith(1);
+  });
+
+});
+
+describe('junction', function () {
+
+  test('create a simple junction', function () {
+    let f = jest.fn();
+    let p1 = pipe();
+    let p2 = pipe();
+    let j = junction();
+
+    p1.connect(j.sendAs('foo'));
+    p2.connect(j.sendAs('bar'));
+    j.connect(f);
+
+    p1.send('test');
+    expect(f).toHaveBeenCalledWith({foo: 'test'});
+
+    p2.send('me');
+    expect(f).toHaveBeenCalledWith({foo: 'test', bar: 'me'});
+
+    p1.send('now');
+    expect(f).toHaveBeenCalledWith({foo: 'now', bar: 'me'});
+  });
+
+  test('use initial state', function () {
+    let f = jest.fn();
+    let p1 = pipe();
+    let p2 = pipe();
+    let j = junction({foo: 'nothing', bar: 'nothing'});
+
+    p1.connect(j.sendAs('foo'));
+    p2.connect(j.sendAs('bar'));
+    j.connect(f);
+
+    p1.send('test');
+    expect(f).toHaveBeenCalledWith({foo: 'test', bar: 'nothing'});
   });
 
 });
