@@ -352,14 +352,17 @@ between two pipes.
 
 ### `splitter(keys)`
 
-This function creates an object that has a `send()` method which can be
-connected to a pipe, and a property for each key in the `keys` array, which is
-a pipe. When an object is passed to the `send()` method, callbacks connected to
-each key's pipe will receive a value for that key in the received object.
+This function takes an array of keys and creates a pipe-like object called a
+'splitter'. 
 
-Keep in mind that 'send' cannot be used as a key in the key list because keys
-become properties on the returned object, and the return object needs to have a
-`send()` method.
+**NOTE:** The key 'send' cannot be used in the `keys` array.
+
+Splitter objects have a `send()` method that can be used to connect the
+splitter to a pipe. 
+
+It also has a property for each key in the `keys` array. These properties are
+pipes. Whenever the splitter receives an object, for each key of that object, a
+matching pipe in the splitter will transmit the value of that key.
 
 For example:
 
@@ -377,7 +380,7 @@ userProperties.email.connect(function (name) {
   console.log('email is', email);
 });
 
-userPipe.send({name: 'John', 'doe@example.com'});
+userPipe.send({name: 'John', email: 'doe@example.com'});
 // logs 'name is John' and 'email is doe@example.com'
 userPipe.send({name: 'Jane'});
 // logs 'name is Jane' and 'email is undefined'
