@@ -20,7 +20,7 @@ used directly.
 * [Utility functions](#utility-functions)
   * [`toTransformer(fn)`](#totransformerfn)
 * [Transformers](#transformers)
-  * [`merge`](#merge)
+  * [`merge()`](#merge)
   * [`debounce(time)`](#debouncetime)
   * [`throttle(interval)`](#throttleinterval)
   * [`rebound(time, ...baseValues)`](#reboundtime-basevalues)
@@ -77,11 +77,12 @@ values and/or the flow of values through the pipe. These can either be simple
 transformers that are used as is, or transformer factories that can be
 configured via arguments.
 
-### `merge`
+### `merge()`
 
-This transformer merges incoming objects into a single object. This is a
-stateful transformer whose state persists throughout the life of the pipe in
-which it is used.
+Merge incoming objects into a single one.
+
+This is a stateful transformer whose state persists throughout the life of the
+pipe in which it is used.
 
 This transformer is usually used at the very start of a pipe in order to
 combine the inputs from several sources.
@@ -112,6 +113,8 @@ user.send({userId: 2}); // logs {"location":"/","userId":2}
 
 ### `debounce(time)`
 
+Debounce the flow of values.
+
 Debouncing is a common technique to limit the rate at which expensive code is
 exercised when faced with a high-trigger-rate event. Deboucing works by
 preventing the values from passing through until a specified period of calm is
@@ -141,6 +144,8 @@ document
 
 ### `throttle(interval)`
 
+Transformers that limits the flow of values to once in a specified interval.
+
 Throttle is a common technique to reduce the rate at which expensive code is
 exercised when faced with a high-trigger-rate event. Throttling achieves this
 by allowing values to pass through only at specified interval. If the time gap
@@ -163,6 +168,8 @@ window.addEventListener('scroll', parallaxPipe.send, false);
 ```
 
 ### `rebound(time, ...baseValues)`
+
+Send base value after a specified time after each transmitted value.
 
 This transformer reverts the pipe to base values with a specified delay after a
 value is received. Rebounding can be used for things that appear temporarily,
@@ -190,8 +197,7 @@ string after approximately five seconds.
 
 ### `filter(testFn)`
 
-This transformer will filter the value for which the test function returns a
-truthy value. 
+Filter values for which the test function returns truthy.
 
 Although this can be useful in a variety of creative ways, one of the users is
 to split a pipe into two branches. Here's an example of such usage:
@@ -214,6 +220,8 @@ p.send(false);
 ```
 
 ### `map(fn)`
+
+Apply a function to all values and transmit the return values.
 
 In many languages, there are functions that apply other functions to all values
 in a list or array or some other container type. The `map()` transformer serves
@@ -238,6 +246,8 @@ incPipe.send(1); // logs 2
 ```
 
 ### `reduce(fn, initialValue)`
+
+Reduce (collapse) incoming values to a single value according to a function.
 
 This transformer works similarly to `reduce()` in arrays, with the difference
 that there is no final value as pipes are a potentially never-ending stream of
@@ -268,6 +278,8 @@ document.addEventListener('click', counter.send, false);
 ```
 
 ### `get(path, defaultValue)`
+
+Get a value at specified path or return a default value if key is undefined.
 
 This transformer will take any object coming down the pipe and return a value
 that corresponds to the dot-separated path within the object. If such a path or
