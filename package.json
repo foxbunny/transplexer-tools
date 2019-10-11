@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "core-js": "2",
-    "transplexer": "^1.0.1"
+    "transplexer": "^1.1.0"
   },
   "files": [
     "dist"
