@@ -4039,10 +4039,10 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
-transplexer@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/transplexer/-/transplexer-1.0.1.tgz#397d0b9674fdfd1983678473091d1f942cbc5196"
-  integrity sha512-oIuTdMYMj/QAWNYfTegGX3SG8A6o4r8Lg0QQvKPPYMxMsGjTHVHmN+3Gf5utRB3wfKRr6047/JoX9kjYQvryOA==
+transplexer@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/transplexer/-/transplexer-1.1.0.tgz#de162346ab2ab478e04398c2a83a5d0bae16d4b6"
+  integrity sha512-9/DLLKEdIs7/1lyZF/PchlpIc6jUimv4rF2DD2A5aqB1JtILyUbp5pgearzBQjxFSUTeEOKR9rWg9oyp9tbfYA==
   dependencies:
     core-js "2"
 
