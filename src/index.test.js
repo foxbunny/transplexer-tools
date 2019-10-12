@@ -497,6 +497,33 @@ describe('sticky', function () {
     expect(f).toHaveBeenLastCalledWith(1);
   });
 
+  test('with additional values', function () {
+    let p = pipe(sticky(1));
+    let f = jest.fn();
+    p.connect(f);
+
+    p.send(2, 2, 2);
+    p.send(2, 2, 2);
+    p.send(3, 3, 3);
+
+    expect(f).toHaveBeenCalledTimes(2);
+    expect(f).toHaveBeenCalledWith(2, 2, 2);
+    expect(f).toHaveBeenCalledWith(3, 3, 3);
+  });
+
+  test('with additional values that change', function () {
+    let p = pipe(sticky(1));
+    let f = jest.fn();
+    p.connect(f);
+
+    p.send(2, 2, 2);
+    p.send(2, 3, 3);
+    p.send(3, 4, 4);
+
+    expect(f).toHaveBeenCalledTimes(2);
+    expect(f).toHaveBeenCalledWith(2, 2, 2);
+    expect(f).toHaveBeenCalledWith(3, 4, 4);
+  });
 });
 
 describe('junction', function () {
