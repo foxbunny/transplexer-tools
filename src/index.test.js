@@ -1,7 +1,6 @@
 import * as fakeDate from 'jest-date-mock';
 import pipe from 'transplexer';
 import {
-  toTransformer,
   merge,
   debounce,
   throttle,
@@ -17,17 +16,6 @@ import {
 } from './index';
 
 jest.useFakeTimers();
-
-describe('toTransfromer', function () {
-
-  test('convert a pure function into a decorator', function () {
-    let c = jest.fn();
-    let deco = toTransformer(x => x + 1);
-    deco(c)(1);
-    expect(c).toHaveBeenCalledWith(2);
-  });
-
-});
 
 describe('merge', function () {
 
