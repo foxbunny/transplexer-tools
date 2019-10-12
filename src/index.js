@@ -1,12 +1,6 @@
 import pipe from 'transplexer';
 
-export function toTransformer(f) {
-  return function (next) {
-    return function (val) {
-      next(f(val));
-    };
-  };
-};
+export const toTransformer = map;
 
 export function merge(next) {
   let obj = {};
@@ -174,10 +168,10 @@ export function always(...values) {
 
 export function sticky(initialValue) {
   return function (next) {
-    return function (value) {
+    return function (value, ...args) {
       if (value !== initialValue) {
         initialValue = value;
-        next(value);
+        next(value, ...args);
       }
     };
   };
