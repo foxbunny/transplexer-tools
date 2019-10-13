@@ -20,7 +20,7 @@ used directly.
 * [Utility functions](#utility-functions)
   * [`toTransformer(fn)`](#totransformerfn)
 * [Transformers](#transformers)
-  * [`merge()`](#merge)
+  * [`merge`](#merge)
   * [`debounce(time)`](#debouncetime)
   * [`throttle(interval)`](#throttleinterval)
   * [`rebound(time, ...baseValues)`](#reboundtime-basevalues)
@@ -28,10 +28,10 @@ used directly.
   * [`map(fn)`](#mapfn)
   * [`reduce(fn, initialValue)`](#reducefn-initialvalue)
   * [`get(path, defaultValue)`](#getpath-defaultvalue)
-  * [`always(...value)`](#alwaysvalue)
+  * [`always(...values)`](#alwaysvalues)
   * [`sticky(initialValue)`](#stickyinitialvalue)
 * [Receiver functions](#receiver-functions)
-  * [`splitter(keys)`](#splitterkeys)
+  * [`splitter(keys, ignoreMissingKeys = false)`](#splitterkeys-ignoremissingkeys--false)
   * [`junction(initialState)`](#junctioninitialstate)
 
 <!-- vim-markdown-toc -->
@@ -56,6 +56,10 @@ Utility functions are functions that are used to build other types of tools.
 
 ### `toTransformer(fn)`
 
+**WARNING:** This function is deprecated. Use `map()` instead, which is
+identical in behavior. `toTransformer()` is currently just an alias for `map()`
+and will be removed in the next major release.
+
 This function takes a pure function and converts it into a transformer.
 
 Example:
@@ -72,12 +76,11 @@ cont p = pipe(
 
 ## Transformers
 
-Transformers are functions that are placed inside the pipe and modify the
-values and/or the flow of values through the pipe. These can either be simple
-transformers that are used as is, or transformer factories that can be
-configured via arguments.
+This package provides a selection of transformers and transformer factories.
+Transformer factories are functions that take parameters and return
+transformers.
 
-### `merge()`
+### `merge`
 
 Merge incoming objects into a single one.
 
@@ -87,7 +90,7 @@ pipe in which it is used.
 This transformer is usually used at the very start of a pipe in order to
 combine the inputs from several sources.
 
-Merge internally users `Object.assing()` in order to mutate the current state.
+Merge internally uses `Object.assing()` in order to mutate the current state.
 This means that all rules regarding `Object.assign()` apply. The incoming
 value's keys will override the existing keys, for example.
 
@@ -195,6 +198,10 @@ messagePipe.send('Hello, rebound!');
 The above example will send 'Hello, robound!' immediately, and then an empty
 string after approximately five seconds.
 
+The timer is reset every time a value reaches the transformer, so if we send
+multiple values down a pipe within the five second timeout, the empty string is
+sent only once, five seconds after the *last* value.
+
 ### `filter(testFn)`
 
 Filter values for which the test function returns truthy.
@@ -230,8 +237,7 @@ and passes the return value on to the next transformer.
 
 Because a JavaScript function can only return a single value, this transformer
 will narrow the pipe down to a single value. This is acceptable in most cases,
-but if you need to pass on multiple values, then you should write a transformer
-instead.
+but if we need to pass on multiple values, then we write a transformer instead.
 
 Example:
 
@@ -259,9 +265,9 @@ transformer or `send()` function, and it is expected to return a single value
 that replaces the `initialValue` as the new state. This new value is then
 passed on to the next transformer or the connected callbacks.
 
-Reduce can be useful for situations where you need persistante state that
-changes over time. A simplest example of this is a counter, but more complex
-things can be done depending on the initial value.
+Reduce can be useful for situations where we need persistent state that changes
+over time. A simplest example of this is a counter, but more complex things can
+be done depending on the initial value.
 
 Example:
 
@@ -307,10 +313,12 @@ firstUserName.send([]);
 // logs 'unknown'
 ```
 
-### `always(...value)`
+### `always(...values)`
 
-This transformer ignores the received values and always returns the same value
-(or multiple values). This is similar to doing the following:
+Always emit the same values whenever any values are received.
+
+This transformer ignores the received values and always transmits the same
+values. This is similar to doing the following:
 
 ```javascript
 pipe(map(function () {
@@ -318,13 +326,13 @@ pipe(map(function () {
 }));
 ```
 
-The main difference compared to `map()` is that `always()` can pass on multiple
-values, whereas `map()` can only pass on one. Another subtle, but important
-difference is that the values passed on by `map()` are evaluated when the
+The main difference compared to the example is that `always()` can pass on
+multiple values, whereas the example can only pass on one. Another subtle, but
+important difference is that the value in the example is evaluated when the
 callback is called, whereas with `always()`, all the values are evaluated only
-once when the pie is being configured. This may be a problem for mutable values
-like objects or arrays, so in such cases, we prefer to use `map()` or write a
-custom transformer.
+once when the pipe is being configured. This may be a problem for mutable
+values like objects or arrays, so in such cases, we prefer to use `map()` or
+write a custom transformer.
 
 Example:
 
@@ -337,6 +345,8 @@ document.addEventListener('click', p.send, false);
 ```
 
 ### `sticky(initialValue)`
+
+Only passes on values if they are different to last one.
 
 This transformer will refuse to pass on values that are identical to the
 previous value. The values are compared for identity (`===`).
@@ -356,14 +366,32 @@ p.send(0);
 // Now logs '0'.
 ```
 
+This transformer only checks the first argument for equality. The rest of the
+arguments are ignored. For example:
+
+```javascript
+let p = pipe(sticky(0));
+p.connect(console.log);
+
+p.send(0, 'a', false);
+p.send(1, 'b', true);
+p.send(1, 'c', true);
+// Logs only '1 b true'
+
+p.send(0, 'd', false);
+// Now logs '0 d false'.
+```
+
 ## Receiver functions
 
-Receiver functions are utility functions that are used as a connected callback
+Receiver functions are utility functions that are used as connected callbacks
 in a pipe. They may also be factory functions that produce functions and
 objects that can be used as receivers. Receivers usually serve as mediators
 between two pipes.
 
-### `splitter(keys)`
+### `splitter(keys, ignoreMissingKeys = false)`
+
+Create an object that splits incoming objects into individual keys.
 
 This function takes an array of keys and creates a pipe-like object called a
 'splitter'. 
@@ -385,35 +413,75 @@ import {splitter} from 'transplexer-tools';
 
 let userPipe = pipe();
 let userProperties = splitter(['name', 'email']);
+
 userPipe.connect(userProperties.send);
+
 userProperties.name.connect(function (name) {
   console.log('name is ', name);
 });
+
 userProperties.email.connect(function (name) {
   console.log('email is', email);
 });
 
 userPipe.send({name: 'John', email: 'doe@example.com'});
 // logs 'name is John' and 'email is doe@example.com'
+
 userPipe.send({name: 'Jane'});
 // logs 'name is Jane' and 'email is undefined'
 ```
 
 As can be seen in the example above, pipes for missing keys also receive a
-value, and the value is `undefined`.
+value, and the value is `undefined`. This behavior can be changed by passing
+true as the second argument:
+
+```javascript
+import pipe from 'transplexer';
+import {splitter} from 'transplexer-tools';
+
+let userPipe = pipe();
+let userProperties = splitter(['name', 'email'], true);
+
+userPipe.connect(userProperties.send);
+
+userProperties.name.connect(function (name) {
+  console.log('name is ', name);
+});
+
+userProperties.email.connect(function (name) {
+  console.log('email is', email);
+});
+
+userPipe.send({name: 'John', email: 'doe@example.com'});
+// logs 'name is John' and 'email is doe@example.com'
+
+userPipe.send({name: 'Jane'});
+// logs 'name is Jane' only, email pipe is ignored
+```
 
 ### `junction(initialState)`
 
-Junctions are used to merge multiple source pipes into an object-emitting
-output pipe. Each source pipe's value is assigned to a key in the output pipe's
-object. Junctions are stateful - all changes made by source pipes persist.
+Create a stateful pipe junction.
+
+Junctions merge values coming down different pipes into an object, and provides
+a pipe that transmits these objects. The object in a junction maintains its
+shape throughout the life of the junction: as new values come down the source
+pipes, they are merged into the object, and the rest of the object remains
+intact. This is why we say junctions are stateful.
 
 The initial state of the object is specified as an argument to the `junction()`
 function. If omitted, the initial state is an empty object.
 
-The junction object has a `send()` method which takes a key and returns a
-callback to which pipes can connect. Values from the pipes connecting to that
-callback will be placed under the specified key. For example:
+Pipes are connected to junctions at a specified key. Therefore, values coming
+down a pipe will be assigned to the specified key on the junction object. A
+callback function that pipes can be connected to is created using the
+junction's `sendAs()` method, which takes the name of the key and returns a
+callback.
+
+Junctions also have a `connect()` method which behaves the same way as in
+normal pipes.
+
+For example:
 
 ```javascript
 import pipe from 'transplexer';
@@ -429,3 +497,28 @@ p.send('test');
 
 // logs '{myKey: 'test'}'
 ```
+
+Just like pipes, junctions support transformers. These are specified as
+additional arguments after the initial state. Note that, if we wish to specify
+transformers, we must specify the initial state. Any number of arguments can be
+specified.
+
+```javascript
+import pipe from 'transplexer';
+import {junction, map} from 'transplexer-tools';
+
+let j = junction({}, function (obj) {
+  return {...obj, myKey: obj.myKey + ' from map'};
+});
+let p = pipe();
+
+p.connect(j.sendAs('myKey'));
+j.connect(console.log);
+
+p.send('test');
+
+// logs '{myKey: 'test from map'}'
+```
+
+Junctions assume that each source pipe will only transmit a single value. All
+additional arguments are ignored.
