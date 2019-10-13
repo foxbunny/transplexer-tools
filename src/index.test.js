@@ -407,6 +407,36 @@ describe('splitter', function () {
     expect(barFn).toHaveBeenCalledWith('bar value');
   });
 
+  test('missing key will send undefined', function () {
+    let p = pipe();
+    let s = splitter(['foo', 'bar']);
+    let fooFn = jest.fn();
+    let barFn = jest.fn();
+    s.foo.connect(fooFn);
+    s.bar.connect(barFn);
+    p.connect(s.send);
+
+    p.send({foo: 'foo value'});
+
+    expect(fooFn).toHaveBeenCalledWith('foo value');
+    expect(barFn).toHaveBeenCalledWith(undefined);
+  });
+
+  test('suppress sending of missing keys', function () {
+    let p = pipe();
+    let s = splitter(['foo', 'bar'], true);
+    let fooFn = jest.fn();
+    let barFn = jest.fn();
+    s.foo.connect(fooFn);
+    s.bar.connect(barFn);
+    p.connect(s.send);
+
+    p.send({foo: 'foo value'});
+
+    expect(fooFn).toHaveBeenCalledWith('foo value');
+    expect(barFn).not.toHaveBeenCalled();
+  });
+
   test('send key is ignored', function () {
     let s = splitter(['send', 'bar']);
 
