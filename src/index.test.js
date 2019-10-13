@@ -580,4 +580,24 @@ describe('junction', function () {
     expect(f).toHaveBeenCalledWith({foo: 'test', bar: 'nothing'});
   });
 
+  test('pass transformers to junction pipe', function () {
+    let f = jest.fn();
+    let p1 = pipe();
+    let p2 = pipe();
+    let j = junction({foo: 'nothing', bar: 'nothing'}, map(function (o) {
+      return {...o, baz: 'added by map'};
+    }));
+
+    p1.connect(j.sendAs('foo'));
+    p2.connect(j.sendAs('bar'));
+    j.connect(f);
+
+    p1.send('test');
+    expect(f).toHaveBeenCalledWith({
+      foo: 'test',
+      bar: 'nothing',
+      baz: 'added by map',
+    });
+  });
+
 });

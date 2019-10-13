@@ -180,9 +180,9 @@ export function sticky(initialValue) {
   };
 };
 
-export function junction(initialState) {
+export function junction(initialState, ...transformers) {
   let state = initialState || {};
-  let p = pipe();
+  let p = pipe(...transformers);
 
   return {
     sendAs: function (key) {
