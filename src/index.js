@@ -138,7 +138,7 @@ export function get(path, defaultValue) {
   };
 };
 
-export function splitter(keys) {
+export function splitter(keys, ignoreMissingKeys = false) {
   let keyPipes = {}
 
   keys.forEach(function (key) {
@@ -152,6 +152,9 @@ export function splitter(keys) {
     ...keyPipes,
     send: function (obj) {
       keys.forEach(function (key) {
+        if (ignoreMissingKeys && !obj.hasOwnProperty(key)) {
+          return;
+        }
         keyPipes[key].send(obj[key]);
       });
     },
