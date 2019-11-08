@@ -30,6 +30,7 @@ used directly.
   * [`get(path, defaultValue)`](#getpath-defaultvalue)
   * [`always(...values)`](#alwaysvalues)
   * [`sticky(initialValue)`](#stickyinitialvalue)
+  * [`aside(fn)`](#asidefn)
 * [Receiver functions](#receiver-functions)
   * [`splitter(keys, ignoreMissingKeys = false)`](#splitterkeys-ignoremissingkeys--false)
   * [`junction(initialState)`](#junctioninitialstate)
@@ -382,6 +383,22 @@ p.send(0, 'd', false);
 // Now logs '0 d false'.
 ```
 
+### `aside(fn)`
+
+This transformer invokes the callback for each set of values, but it ignores
+the result and passes the values as-is to the next transformer.
+
+This can be useful for debugging or implemneting side effects that should not
+be visible downstream.
+
+Example:
+
+```javascript
+let p = pipe(aside(console.log));
+```
+
+The above code produces a pass-through pipe that logs every input.
+
 ## Receiver functions
 
 Receiver functions are utility functions that are used as connected callbacks
@@ -420,7 +437,7 @@ userProperties.name.connect(function (name) {
   console.log('name is ', name);
 });
 
-userProperties.email.connect(function (name) {
+userProperties.email.connect(function (email) {
   console.log('email is', email);
 });
 
@@ -448,7 +465,7 @@ userProperties.name.connect(function (name) {
   console.log('name is ', name);
 });
 
-userProperties.email.connect(function (name) {
+userProperties.email.connect(function (email) {
   console.log('email is', email);
 });
 
@@ -505,7 +522,7 @@ specified.
 
 ```javascript
 import pipe from 'transplexer';
-import {junction, map} from 'transplexer-tools';
+import {junction} from 'transplexer-tools';
 
 let j = junction({}, function (obj) {
   return {...obj, myKey: obj.myKey + ' from map'};

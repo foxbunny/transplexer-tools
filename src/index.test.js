@@ -13,6 +13,7 @@ import {
   always,
   sticky,
   junction,
+  aside,
 } from './index';
 
 jest.useFakeTimers();
@@ -598,6 +599,22 @@ describe('junction', function () {
       bar: 'nothing',
       baz: 'added by map',
     });
+  });
+
+});
+
+describe('aside', function () {
+
+  test('call a callback', function () {
+    let f = jest.fn();
+    let cb = jest.fn(x => x + 1);
+    let p = pipe(aside(cb));
+
+    p.connect(f);
+    p.send(1);
+
+    expect(f).toHaveBeenCalledWith(1);
+    expect(cb).toHaveBeenCalledWith(1);
   });
 
 });

@@ -196,3 +196,12 @@ export function junction(initialState, ...transformers) {
     },
   };
 };
+
+export function aside(fn) {
+  return function (next) {
+    return function(...args) {
+      fn(...args);
+      next(...args);
+    };
+  };
+};
